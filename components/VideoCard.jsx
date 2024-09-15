@@ -1,33 +1,53 @@
 import { useState } from "react";
 import { ResizeMode, Video } from "expo-av";
 import { View, Text, TouchableOpacity, Image } from "react-native";
-
+import { useTheme } from "../context/ThemeContext"; // Importa useTheme
 import { icons } from "../constants";
 
 const VideoCard = ({ title, creator, avatar, thumbnail, video }) => {
   const [play, setPlay] = useState(false);
+  const { theme } = useTheme(); // Usa el hook useTheme
 
   return (
     <View className="flex flex-col items-center px-4 mb-14">
       <View className="flex flex-row gap-3 items-start">
         <View className="flex justify-center items-center flex-row flex-1">
-          <View className="w-[46px] h-[46px] rounded-lg border border-secondary flex justify-center items-center p-0.5">
+          <View
+            style={{
+              width: 46,
+              height: 46,
+              borderRadius: 8,
+              borderColor: theme.secondary, // Ajusta el color del borde
+              borderWidth: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: 0.5,
+            }}
+          >
             <Image
               source={{ uri: avatar }}
-              className="w-full h-full rounded-lg"
+              style={{ width: '100%', height: '100%', borderRadius: 8 }}
               resizeMode="cover"
             />
           </View>
 
           <View className="flex justify-center flex-1 ml-3 gap-y-1">
             <Text
-              className="font-psemibold text-sm text-white"
+              style={{
+                fontFamily: 'psemibold', // Asegúrate de tener esta fuente
+                fontSize: 14,
+                color: theme.textColor, // Ajusta el color del texto
+              }}
               numberOfLines={1}
             >
               {title}
             </Text>
             <Text
-              className="text-xs text-gray-100 font-pregular"
+              style={{
+                fontFamily: 'pregular', // Asegúrate de tener esta fuente
+                fontSize: 12,
+                color: theme.secondaryTextColor, // Ajusta el color del texto secundario
+              }}
               numberOfLines={1}
             >
               {creator}
@@ -36,14 +56,18 @@ const VideoCard = ({ title, creator, avatar, thumbnail, video }) => {
         </View>
 
         <View className="pt-2">
-          <Image source={icons.menu} className="w-5 h-5" resizeMode="contain" />
+          <Image
+            source={icons.menu}
+            style={{ width: 20, height: 20, tintColor: theme.iconColor }} // Ajusta el color del ícono
+            resizeMode="contain"
+          />
         </View>
       </View>
 
       {play ? (
         <Video
           source={{ uri: video }}
-          className="w-full h-60 rounded-xl mt-3"
+          style={{ width: '100%', height: 240, borderRadius: 16, marginTop: 12 }}
           resizeMode={ResizeMode.CONTAIN}
           useNativeControls
           shouldPlay
@@ -57,17 +81,25 @@ const VideoCard = ({ title, creator, avatar, thumbnail, video }) => {
         <TouchableOpacity
           activeOpacity={0.7}
           onPress={() => setPlay(true)}
-          className="w-full h-60 rounded-xl mt-3 relative flex justify-center items-center"
+          style={{
+            width: '100%',
+            height: 240,
+            borderRadius: 16,
+            marginTop: 12,
+            position: 'relative',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
         >
           <Image
             source={{ uri: thumbnail }}
-            className="w-full h-full rounded-xl mt-3"
+            style={{ width: '100%', height: '100%', borderRadius: 16 }}
             resizeMode="cover"
           />
 
           <Image
             source={icons.play}
-            className="w-12 h-12 absolute"
+            style={{ width: 48, height: 48, position: 'absolute', tintColor: theme.iconColor }} // Ajusta el color del ícono
             resizeMode="contain"
           />
         </TouchableOpacity>

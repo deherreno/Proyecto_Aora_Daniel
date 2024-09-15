@@ -1,7 +1,7 @@
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Image, FlatList, TouchableOpacity } from "react-native";
-
+import { useTheme } from "../../context/ThemeContext"; // Importa useTheme
 import { icons } from "../../constants";
 import useAppwrite from "../../lib/useAppwrite";
 import { getUserPosts, signOut } from "../../lib/appwrite";
@@ -11,6 +11,7 @@ import { EmptyState, InfoBox, VideoCard } from "../../components";
 const Profile = () => {
   const { user, setUser, setIsLogged } = useGlobalContext();
   const { data: posts } = useAppwrite(() => getUserPosts(user.$id));
+  const { theme } = useTheme(); // Usa el hook useTheme
 
   const logout = async () => {
     await signOut();
@@ -21,7 +22,7 @@ const Profile = () => {
   };
 
   return (
-    <SafeAreaView className="bg-primary h-full">
+    <SafeAreaView style={{ backgroundColor: theme.backgroundColor, flex: 1 }}>
       <FlatList
         data={posts}
         keyExtractor={(item) => item.$id}
@@ -41,43 +42,43 @@ const Profile = () => {
           />
         )}
         ListHeaderComponent={() => (
-          <View className="w-full flex justify-center items-center mt-6 mb-12 px-4">
+          <View style={{ alignItems: 'center', marginTop: 24, marginBottom: 48 }}>
             <TouchableOpacity
               onPress={logout}
-              className="flex w-full items-end mb-10"
+              style={{ alignSelf: 'flex-end', marginBottom: 20 }}
             >
               <Image
                 source={icons.logout}
+                style={{ width: 24, height: 24 }}
                 resizeMode="contain"
-                className="w-6 h-6"
               />
             </TouchableOpacity>
 
-            <View className="w-16 h-16 border border-secondary rounded-lg flex justify-center items-center">
+            <View style={{ width: 64, height: 64, borderRadius: 32, borderColor: '#FFA001', borderWidth: 2, justifyContent: 'center', alignItems: 'center' }}>
               <Image
                 source={{ uri: user?.avatar }}
-                className="w-[90%] h-[90%] rounded-lg"
+                style={{ width: '90%', height: '90%', borderRadius: 32 }}
                 resizeMode="cover"
               />
             </View>
 
             <InfoBox
               title={user?.username}
-              containerStyles="mt-5"
-              titleStyles="text-lg"
+              containerStyles={{ marginTop: 20 }}
+              titleStyles={{ fontSize: 18 }}
             />
 
-            <View className="mt-5 flex flex-row">
+            <View style={{ flexDirection: 'row', marginTop: 20 }}>
               <InfoBox
                 title={posts.length || 0}
                 subtitle="Posts"
-                titleStyles="text-xl"
-                containerStyles="mr-10"
+                titleStyles={{ fontSize: 20 }}
+                containerStyles={{ marginRight: 20 }}
               />
               <InfoBox
                 title="1.2k"
                 subtitle="Followers"
-                titleStyles="text-xl"
+                titleStyles={{ fontSize: 20 }}
               />
             </View>
           </View>

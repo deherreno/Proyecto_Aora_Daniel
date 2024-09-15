@@ -1,22 +1,18 @@
 import { useState } from "react";
 import { Link, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
-
+import { View, Text, ScrollView, Dimensions, Alert, Image, StyleSheet } from "react-native";
+import { useTheme } from "../../context/ThemeContext"; // Importa useTheme
 import { images } from "../../constants";
-import { createUser } from "../../lib/appwrite";
 import { CustomButton, FormField } from "../../components";
+import { createUser } from "../../lib/appwrite";
 import { useGlobalContext } from "../../context/GlobalProvider";
 
 const SignUp = () => {
   const { setUser, setIsLogged } = useGlobalContext();
-
+  const { isDarkMode, theme } = useTheme(); // Usa el hook useTheme
   const [isSubmitting, setSubmitting] = useState(false);
-  const [form, setForm] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
+  const [form, setForm] = useState({ username: "", email: "", password: "" });
 
   const submit = async () => {
     if (form.username === "" || form.email === "" || form.password === "") {
@@ -24,6 +20,7 @@ const SignUp = () => {
     }
 
     setSubmitting(true);
+
     try {
       const result = await createUser(form.email, form.password, form.username);
       setUser(result);
@@ -38,23 +35,12 @@ const SignUp = () => {
   };
 
   return (
-    <SafeAreaView className="bg-primary h-full">
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.backgroundColor }]}>
       <ScrollView>
-        <View
-          className="w-full flex justify-center h-full px-4 my-6"
-          style={{
-            minHeight: Dimensions.get("window").height - 100,
-          }}
-        >
-          <Image
-            source={images.logo}
-            resizeMode="contain"
-            className="w-[115px] h-[34px]"
-          />
+        <View style={styles.innerContainer}>
+          <Image source={images.logo} resizeMode="contain" style={styles.logo} />
 
-          <Text className="text-2xl font-semibold text-white mt-10 font-psemibold">
-            Sign Up to Aora
-          </Text>
+          <Text style={[styles.title, { color: theme.color }]}>Sign Up to Aora</Text>
 
           <FormField
             title="Username"
@@ -85,21 +71,48 @@ const SignUp = () => {
             isLoading={isSubmitting}
           />
 
-          <View className="flex justify-center pt-5 flex-row gap-2">
-            <Text className="text-lg text-gray-100 font-pregular">
-              Have an account already?
-            </Text>
-            <Link
-              href="/sign-in"
-              className="text-lg font-psemibold text-secondary"
-            >
-              Login
-            </Link>
+          <View style={styles.footer}>
+            <Text style={[styles.footerText, { color: theme.color }]}>Have an account already?</Text>
+            <Link href="/sign-in" style={styles.link}>Login</Link>
           </View>
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  innerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  logo: {
+    width: 115,
+    height: 34,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: '600',
+    marginTop: 10,
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingTop: 20,
+  },
+  footerText: {
+    fontSize: 16,
+  },
+  link: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#f0f',
+  },
+});
 
 export default SignUp;

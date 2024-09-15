@@ -10,8 +10,9 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  StyleSheet,
 } from "react-native";
-
+import { useTheme } from "../../context/ThemeContext"; // Importa useTheme
 import { icons } from "../../constants";
 import { createVideoPost } from "../../lib/appwrite";
 import { CustomButton, FormField } from "../../components";
@@ -19,6 +20,7 @@ import { useGlobalContext } from "../../context/GlobalProvider";
 
 const Create = () => {
   const { user } = useGlobalContext();
+  const { theme } = useTheme(); // Usa el hook useTheme
   const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState({
     title: "",
@@ -90,9 +92,11 @@ const Create = () => {
   };
 
   return (
-    <SafeAreaView className="bg-primary h-full">
-      <ScrollView className="px-4 my-6">
-        <Text className="text-2xl text-white font-psemibold">Upload Video</Text>
+    <SafeAreaView style={{ backgroundColor: theme.backgroundColor, flex: 1 }}>
+      <ScrollView style={{ padding: 16 }}>
+        <Text style={{ color: theme.color, fontSize: 24, fontWeight: '600', marginBottom: 16 }}>
+          Upload Video
+        </Text>
 
         <FormField
           title="Video Title"
@@ -102,28 +106,25 @@ const Create = () => {
           otherStyles="mt-10"
         />
 
-        <View className="mt-7 space-y-2">
-          <Text className="text-base text-gray-100 font-pmedium">
-            Upload Video
-          </Text>
+        <View style={{ marginTop: 16, marginBottom: 16 }}>
+          <Text style={{ color: theme.color }}>Upload Video</Text>
 
           <TouchableOpacity onPress={() => openPicker("video")}>
             {form.video ? (
               <Video
                 source={{ uri: form.video.uri }}
-                className="w-full h-64 rounded-2xl"
+                style={{ width: '100%', height: 256, borderRadius: 16 }}
                 useNativeControls
                 resizeMode={ResizeMode.COVER}
                 isLooping
               />
             ) : (
-              <View className="w-full h-40 px-4 bg-black-100 rounded-2xl border border-black-200 flex justify-center items-center">
-                <View className="w-14 h-14 border border-dashed border-secondary-100 flex justify-center items-center">
+              <View style={styles.uploadContainer}>
+                <View style={styles.uploadIconContainer}>
                   <Image
                     source={icons.upload}
                     resizeMode="contain"
-                    alt="upload"
-                    className="w-1/2 h-1/2"
+                    style={styles.uploadIcon}
                   />
                 </View>
               </View>
@@ -131,29 +132,23 @@ const Create = () => {
           </TouchableOpacity>
         </View>
 
-        <View className="mt-7 space-y-2">
-          <Text className="text-base text-gray-100 font-pmedium">
-            Thumbnail Image
-          </Text>
+        <View style={{ marginTop: 16, marginBottom: 16 }}>
+          <Text style={{ color: theme.color }}>Thumbnail Image</Text>
 
           <TouchableOpacity onPress={() => openPicker("image")}>
             {form.thumbnail ? (
               <Image
                 source={{ uri: form.thumbnail.uri }}
-                resizeMode="cover"
-                className="w-full h-64 rounded-2xl"
+                style={styles.thumbnail}
               />
             ) : (
-              <View className="w-full h-16 px-4 bg-black-100 rounded-2xl border-2 border-black-200 flex justify-center items-center flex-row space-x-2">
+              <View style={styles.thumbnailPlaceholder}>
                 <Image
                   source={icons.upload}
                   resizeMode="contain"
-                  alt="upload"
-                  className="w-5 h-5"
+                  style={styles.uploadIconSmall}
                 />
-                <Text className="text-sm text-gray-100 font-pmedium">
-                  Choose a file
-                </Text>
+                <Text style={{ color: theme.color }}>Choose a file</Text>
               </View>
             )}
           </TouchableOpacity>
@@ -177,5 +172,52 @@ const Create = () => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  uploadContainer: {
+    width: '100%',
+    height: 160,
+    backgroundColor: '#000',
+    borderRadius: 16,
+    borderColor: '#333',
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  uploadIconContainer: {
+    width: 56,
+    height: 56,
+    borderColor: '#FFA001',
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderRadius: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  uploadIcon: {
+    width: '50%',
+    height: '50%',
+  },
+  thumbnail: {
+    width: '100%',
+    height: 256,
+    borderRadius: 16,
+  },
+  thumbnailPlaceholder: {
+    width: '100%',
+    height: 64,
+    backgroundColor: '#000',
+    borderRadius: 16,
+    borderColor: '#333',
+    borderWidth: 2,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  uploadIconSmall: {
+    width: 20,
+    height: 20,
+  },
+});
 
 export default Create;

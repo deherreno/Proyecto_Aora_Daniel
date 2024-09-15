@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { Redirect, Tabs } from "expo-router";
 import { Image, Text, View } from "react-native";
-
+import { useTheme } from "../../context/ThemeContext"; // Importa useTheme
 import { icons } from "../../constants";
 import { Loader } from "../../components";
 import { useGlobalContext } from "../../context/GlobalProvider";
@@ -27,6 +27,7 @@ const TabIcon = ({ icon, color, name, focused }) => {
 
 const TabLayout = () => {
   const { loading, isLogged } = useGlobalContext();
+  const { isDarkMode, theme } = useTheme(); // Usa el hook useTheme
 
   if (!loading && !isLogged) return <Redirect href="/sign-in" />;
 
@@ -38,9 +39,9 @@ const TabLayout = () => {
           tabBarInactiveTintColor: "#CDCDE0",
           tabBarShowLabel: false,
           tabBarStyle: {
-            backgroundColor: "#161622",
+            backgroundColor: theme.backgroundColor,
             borderTopWidth: 1,
-            borderTopColor: "#232533",
+            borderTopColor: theme.borderColor,
             height: 84,
           },
         }}
@@ -75,7 +76,6 @@ const TabLayout = () => {
             ),
           }}
         />
-
         <Tabs.Screen
           name="create"
           options={{
@@ -109,7 +109,7 @@ const TabLayout = () => {
       </Tabs>
 
       <Loader isLoading={loading} />
-      <StatusBar backgroundColor="#161622" style="light" />
+      <StatusBar backgroundColor={theme.backgroundColor} style={isDarkMode ? "light" : "dark"} />
     </>
   );
 };

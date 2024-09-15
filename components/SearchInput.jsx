@@ -1,20 +1,40 @@
 import { useState } from "react";
 import { router, usePathname } from "expo-router";
 import { View, TouchableOpacity, Image, TextInput, Alert } from "react-native";
-
+import { useTheme } from "../context/ThemeContext"; // Importa useTheme
 import { icons } from "../constants";
 
 const SearchInput = ({ initialQuery }) => {
   const pathname = usePathname();
   const [query, setQuery] = useState(initialQuery || "");
+  const { theme } = useTheme(); // Usa el hook useTheme
 
   return (
-    <View className="flex flex-row items-center space-x-4 w-full h-16 px-4 bg-black-100 rounded-2xl border-2 border-black-200 focus:border-secondary">
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        spaceX: 4,
+        width: '100%',
+        height: 64,
+        paddingHorizontal: 16,
+        backgroundColor: theme.backgroundColor,
+        borderRadius: 12,
+        borderWidth: 2,
+        borderColor: theme.borderColor,
+      }}
+    >
       <TextInput
-        className="text-base mt-0.5 text-white flex-1 font-pregular"
+        style={{
+          color: theme.textColor,
+          fontSize: 16,
+          flex: 1,
+          marginTop: 2,
+          fontFamily: 'PRegular', // Asegúrate de que el nombre de la fuente coincida con el que estás usando
+        }}
         value={query}
         placeholder="Search a video topic"
-        placeholderTextColor="#CDCDE0"
+        placeholderTextColor={theme.placeholderColor}
         onChangeText={(e) => setQuery(e)}
       />
 
@@ -30,7 +50,11 @@ const SearchInput = ({ initialQuery }) => {
           else router.push(`/search/${query}`);
         }}
       >
-        <Image source={icons.search} className="w-5 h-5" resizeMode="contain" />
+        <Image
+          source={icons.search}
+          style={{ width: 20, height: 20 }}
+          resizeMode="contain"
+        />
       </TouchableOpacity>
     </View>
   );

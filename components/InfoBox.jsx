@@ -1,12 +1,15 @@
+import { useTheme } from "../context/ThemeContext";
 import { View, Text } from "react-native";
 
 const InfoBox = ({ title, subtitle, containerStyles, titleStyles }) => {
+  const { theme } = useTheme(); // Usa el hook useTheme
+
   return (
-    <View className={containerStyles}>
-      <Text className={`text-white text-center font-psemibold ${titleStyles}`}>
+    <View style={[{ backgroundColor: theme.infoBoxBackground }, containerStyles]}>
+      <Text style={[{ color: theme.infoBoxTitleColor, textAlign: 'center', fontWeight: '600' }, titleStyles]}>
         {title}
       </Text>
-      <Text className="text-sm text-gray-100 text-center font-pregular">
+      <Text style={{ color: theme.infoBoxSubtitleColor, textAlign: 'center', fontSize: 14 }}>
         {subtitle}
       </Text>
     </View>
